@@ -1,0 +1,13 @@
+Bài này lỗi có thể thấy được là formatString tại hàm echo_back nhưng với việc nhập length tối đa là 7 bytes nên t cần hướng giải mới
+- Tại đây chúng ta sẽ khai thác sử dụng _IO_FILE_ chúng ta sẽ ghi đè _IO_Buf_base và _IO_buf_end để có thể ghi được nhiều byte hơn
+- Sau khi ghi đè thì struct của _IO_FILE_ sẽ bị thay đổi (https://codebrowser.dev/glibc/glibc/libio/fileops.c.html) và để thực hiện ghi dè tiếp thì cần thỏa mãn:
+  if (fp->_IO_read_ptr < fp->_IO_read_end)
+    return *(unsigned char *) fp->_IO_read_ptr;
+- Đây là công việc của getchar() ta có thực hiện vòng lặp với
+- Hướng khai thác chính:
++ Leak libc, elf, ret address main để tính libc base, elf base và ret address để ROP
++ dùng setname để ghi đoạn địa chỉ _IO_buf_base_ và dùng echo "%n" để ghi hijack địa chỉ
++ Ghi đè các vị trí sau, buf_base -> ret_addr, buf_end -> ret_addr + 0x18 (vì rop chiếm 0x18 bytes)
++ loop echo_back để getchar() thỏa mã yêu cầu _IO_read_ptr == _IO_read_end
++ ghi rop và exit
+==> get shell !!!

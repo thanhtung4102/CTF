@@ -1,0 +1,6 @@
+break * 0x400e33
+break * 0x400e8f
+break * 0x400e53
+break * 0x400efd
+break * 0x400f68
+

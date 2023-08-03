@@ -1,0 +1,4 @@
+break * 0x4007cc
+break * 0x4007d7
+break * puts + 352
+
